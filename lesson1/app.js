@@ -53,8 +53,8 @@ const {createAsync, getDetailAboutFiles} = require("./test3/test2Async");
 // });
 
 
-makeFiles();
-// deleteFiles();
+// makeFiles();
+deleteFiles();
 
 // createAsync().then()
 getDetailAboutFiles().then()
