@@ -17,9 +17,17 @@ const usersFilePath = path.join(__dirname, 'users.json');
 app.post('/users', async (req, res) => {
     try {
 
-        const {name, age} = req.body;
-        if (name.length <= 2 || age <= 0) {
-            throw new Error("Name must to have more than 2 character and age mustn't to be equal 0 or less then 0");
+        const {name, age, gender} = req.body;
+        if (name && name.length <= 2) {
+            throw new Error("Name must to have more than 2 character!");
+            return;
+        }
+        if (age && age <= 0) {
+            throw new Error("Age mustn't to be equal 0 or less then 0!");
+            return;
+        }
+        if (gender && (gender !== "male" && gender !== "female")) {
+            throw new Error("Gender must be 'male' or 'female'!");
             return;
         }
 
@@ -69,12 +77,32 @@ app.put('/users/:id', async (req, res) => {
     try {
         const fileData = await fs.readFile(usersFilePath);
         const users = JSON.parse(fileData.toString());
+        const userId = Number(req.params.id);
+        const {name, age, gender} = req.body;
 
-        const userById = users.find(user => user.id === Number(req.params.id));
-        if (!userById) {
+        const index = users.findIndex((user) =>user.id === userId);
+        if (!index) {
             throw new Error('User does not exist!');
             return;
         }
+
+        if (name && name.length <= 2) {
+            throw new Error("Name must to have more than 2 character!");
+            return;
+        }
+        if (age && age <= 0) {
+            throw new Error("Age mustn't to be equal 0 or less then 0!");
+            return;
+        }
+        if (gender && (gender !== "male" && gender !== "female")) {
+            throw new Error("Gender must be 'male' or 'female'!");
+            return;
+        }
+
+        users[index] = {...users[index], ...req.body};
+
+        await fs.writeFile(usersFilePath, JSON.stringify(users));
+        res.json(users).status(201);
 
     } catch (e) {
         res.json(e.message).status(400);
