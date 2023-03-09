@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import { EGenres } from "../types/user.types";
+import { EGenres } from "../types";
 
 const userSchema = new Schema({
   name: {

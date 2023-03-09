@@ -1,35 +1,31 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
-import { User } from "./models/User.model";
+import { configs } from "./config";
+import { ApiError } from "./errors/api.error";
+import { userRouter } from "./routes";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/users", async (req: Request, res: Response) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+app.use("/users", userRouter);
 
-app.post("/users", async (req: Request, res: Response) => {
-  try {
-    const users = await User.create(req.body);
-    res.json(users);
-  } catch (error) {
-    res.json(error.message);
+//ERROR HANDLER
+app.use(
+  "/",
+  (err: ApiError, req: Request, res: Response, next: NextFunction) => {
+    const { message, status } = err;
+    res.json({ message, status }).status(status);
   }
-});
+);
 
-const PORT = 5000;
-app.listen(PORT, () => {
+app.listen(configs.PORT, () => {
   try {
-    console.log(`Server had started on port ${PORT}!`);
+    console.log(`Server had started on port ${configs.PORT}!`);
+
+    //Connect to MongoDB
     mongoose
       .connect("mongodb://127.0.0.1:27017/september-2022")
       .then(() => console.log("Connected"));
