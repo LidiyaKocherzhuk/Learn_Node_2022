@@ -1,15 +1,31 @@
 import { Router } from "express";
 
 import { userController } from "../controllers";
+import { paramsMiddleware, userMiddleware } from "../middlewares";
 
 export const userRouter = Router();
 
 userRouter.get("/", userController.getAll);
 
-userRouter.get("/:userId", userController.getById);
+userRouter.post("/", userMiddleware.createOrThrow, userController.create);
 
-userRouter.post("/", userController.create);
+userRouter.get(
+  "/:userId",
+  paramsMiddleware.isIdValid,
+  userMiddleware.getByIdOrThrow,
+  userController.getById
+);
 
-userRouter.patch("/:userId", userController.update);
+userRouter.patch(
+  "/:userId",
+  paramsMiddleware.isIdValid,
+  userMiddleware.updateOrThrow,
+  userController.update
+);
 
-userRouter.delete("/:userId", userController.delete);
+userRouter.delete(
+  "/:userId",
+  paramsMiddleware.isIdValid,
+  userMiddleware.deleteOrThrow,
+  userController.delete
+);

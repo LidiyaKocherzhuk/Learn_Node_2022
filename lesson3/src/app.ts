@@ -2,8 +2,9 @@ import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 
 import { configs } from "./config";
-import { ApiError } from "./errors/api.error";
+import { ApiError } from "./errors";
 import { userRouter } from "./routes";
+import { IError } from "./types";
 
 const app = express();
 
@@ -15,9 +16,14 @@ app.use("/users", userRouter);
 //ERROR HANDLER
 app.use(
   "/",
-  (err: ApiError, req: Request, res: Response, next: NextFunction) => {
+  (
+    err: ApiError,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Response<IError> => {
     const { message, status } = err;
-    res.json({ message, status }).status(status);
+    return res.json({ message, status }).status(status);
   }
 );
 

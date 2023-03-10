@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ApiError } from "../errors";
 import { userService } from "../services";
 import { ICommonResponse, IMessage, IUser } from "../types";
-import {ApiError} from "../errors/api.error";
 
 class UserController {
   public async getAll(
@@ -15,7 +15,7 @@ class UserController {
 
       return res.json(users);
     } catch (error) {
-      next(error.message);
+      next(error);
     }
   }
 
@@ -31,7 +31,7 @@ class UserController {
 
       return res.json(user);
     } catch (error) {
-      next(error.message);
+      next(error);
     }
   }
 
@@ -41,11 +41,11 @@ class UserController {
     next: NextFunction
   ): Promise<Response<ICommonResponse<IUser>>> {
     try {
-      const user = await userService.create(req.body);
+      const user = await userService.create(res.locals as IUser);
 
       return res.json({ message: "User created successfully.", data: user });
     } catch (error) {
-      next(error.message);
+      next(error);
     }
   }
 
@@ -60,12 +60,12 @@ class UserController {
       const result = await userService.update(userId, req.body);
 
       if (!result.acknowledged) {
-        throw new ApiError("Error...", 400);
+        next(new ApiError("Error...", 400));
       }
 
       return res.json({ message: "User updated successfully." });
     } catch (error) {
-      next(error.message);
+      next(error);
     }
   }
 
@@ -81,7 +81,7 @@ class UserController {
 
       return res.json({ message: "User deleted successfully." });
     } catch (error) {
-      next(error.message);
+      next(error);
     }
   }
 }
