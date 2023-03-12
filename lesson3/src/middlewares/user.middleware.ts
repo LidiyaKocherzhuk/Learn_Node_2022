@@ -21,7 +21,7 @@ class UserMiddleware {
     }
   }
 
-  public async createOrThrow(req: Request, res: Response, next: NextFunction) {
+  public async isValidCreate(req: Request, res: Response, next: NextFunction) {
     try {
       const { error, value } = userValidator.create.validate(req.body);
 
@@ -36,7 +36,7 @@ class UserMiddleware {
     }
   }
 
-  public async updateOrThrow(req: Request, res: Response, next: NextFunction) {
+  public async isValidUpdate(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params;
 
@@ -59,7 +59,7 @@ class UserMiddleware {
     }
   }
 
-  public async deleteOrThrow(req: Request, res: Response, next: NextFunction) {
+  public async isValidDelete(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params;
 

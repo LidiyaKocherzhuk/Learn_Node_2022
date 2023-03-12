@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 import { regexConstant } from "../constants";
-import { EGenres } from "../types";
+import { EGenres } from "../enums";
 
 export const userValidator = {
   create: Joi.object({
