@@ -9,7 +9,11 @@ class UserService {
   }
 
   public getById(_id: string): Promise<IUser> {
-    return User.findOne({ _id });
+    return User.findById(_id);
+  }
+
+  public getOne(params: Partial<IUser>): Promise<IUser> {
+    return User.findOne(params);
   }
 
   public create(createUser: IUser): Promise<IUser> {

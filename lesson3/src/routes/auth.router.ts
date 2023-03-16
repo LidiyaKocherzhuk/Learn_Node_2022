@@ -7,9 +7,14 @@ export const authRouter = Router();
 
 authRouter.post(
   "/register",
-  userMiddleware.isValidCreate,
-  authMiddleware.register,
+  userMiddleware.isValidCreateData,
+  userMiddleware.checkExistUser("register", "email"),
   authController.register
 );
 
-authRouter.post("/login", authMiddleware.login, authController.login);
+authRouter.post(
+  "/login",
+  authMiddleware.isValidLoginData,
+  userMiddleware.checkExistUser("login", "email"),
+  authController.login
+);

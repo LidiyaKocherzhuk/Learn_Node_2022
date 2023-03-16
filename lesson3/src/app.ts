@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { configs } from "./config";
 import { ApiError } from "./errors";
 import { authRouter, userRouter } from "./routes";
-import { IError } from "./types";
 
 const app = express();
 
@@ -17,14 +16,9 @@ app.use("/auth", authRouter);
 //ERROR HANDLER
 app.use(
   "/",
-  (
-    err: ApiError,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Response<IError> => {
+  (err: ApiError, req: Request, res: Response, next: NextFunction) => {
     const { message, status } = err;
-    return res.json({ message, status }).status(status);
+    res.status(status || 500).json({ message, status });
   }
 );
 
@@ -33,9 +27,7 @@ app.listen(configs.PORT, () => {
     console.log(`Server had started on port ${configs.PORT}!`);
 
     //Connect to MongoDB
-    mongoose
-      .connect("mongodb://127.0.0.1:27017/september-2022")
-      .then(() => console.log("Connected"));
+    mongoose.connect(configs.DB_URL).then(() => console.log("Connected"));
   } catch (error) {
     console.log(error);
   }

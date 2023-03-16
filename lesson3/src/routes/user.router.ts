@@ -1,16 +1,19 @@
 import { Router } from "express";
 
 import { userController } from "../controllers";
-import { paramsMiddleware, userMiddleware } from "../middlewares";
+import {
+  authMiddleware,
+  paramsMiddleware,
+  userMiddleware,
+} from "../middlewares";
 
 export const userRouter = Router();
 
 userRouter.get("/", userController.getAll);
 
-userRouter.post("/", userMiddleware.isValidCreate, userController.create);
-
 userRouter.get(
   "/:userId",
+  authMiddleware.isAuthorized,
   paramsMiddleware.isIdValid,
   userMiddleware.getByIdOrThrow,
   userController.getById

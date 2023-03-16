@@ -6,6 +6,7 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
+      trim: true,
     },
     email: {
       type: String,
@@ -17,10 +18,12 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
+      trim: true,
     },
     gender: {
       type: String,
       enum: EGenres,
+      trim: true,
     },
   },
   {
