@@ -1,10 +1,13 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
+
+import { User } from "./User.model";
 
 const tokenSchema = new Schema(
   {
-    userId: {
-      type: String,
-      trim: true,
+    _user_id: {
+      type: Types.ObjectId,
+      required: true,
+      ref: User,
     },
     accessToken: {
       type: String,
@@ -21,4 +24,4 @@ const tokenSchema = new Schema(
   }
 );
 
-export const Token = model("token", tokenSchema);
+export const TokenModel = model("token", tokenSchema);

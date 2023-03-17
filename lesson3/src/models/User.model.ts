@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import { EGenres } from "../enums";
+import { EGenders } from "../enums";
 
 const userSchema = new Schema(
   {
@@ -20,9 +20,14 @@ const userSchema = new Schema(
       required: [true, "Password is required"],
       trim: true,
     },
+    phone: {
+      type: String,
+      required: [true, "Phone is required"],
+      trim: true,
+    },
     gender: {
       type: String,
-      enum: EGenres,
+      enum: EGenders,
       trim: true,
     },
   },

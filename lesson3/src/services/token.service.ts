@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 
 import { configs } from "../config";
-import { ETokenType } from "../enums";
+import { ETokenTypes } from "../enums";
 import { ApiError } from "../errors";
 import { ITokenPair, ITokenPayload } from "../types";
 
@@ -18,7 +18,7 @@ class TokenService {
     return { accessToken, refreshToken };
   }
 
-  public checkToken(token: string, tokenType = ETokenType.access) {
+  public checkToken(token: string, tokenType = ETokenTypes.access) {
     try {
       let secret = "";
 

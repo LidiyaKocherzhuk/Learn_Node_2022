@@ -3,9 +3,10 @@ import { Router } from "express";
 import { userController } from "../controllers";
 import {
   authMiddleware,
-  paramsMiddleware,
+  commonMiddleware,
   userMiddleware,
 } from "../middlewares";
+import { userValidator } from "../validators";
 
 export const userRouter = Router();
 
@@ -13,22 +14,25 @@ userRouter.get("/", userController.getAll);
 
 userRouter.get(
   "/:userId",
-  authMiddleware.isAuthorized,
-  paramsMiddleware.isIdValid,
-  userMiddleware.getByIdOrThrow,
+  authMiddleware.checkAccessToken,
+  commonMiddleware.isIdValid("userId"),
+  userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.getById
 );
 
 userRouter.patch(
   "/:userId",
-  paramsMiddleware.isIdValid,
-  userMiddleware.isValidUpdate,
+  authMiddleware.checkAccessToken,
+  commonMiddleware.isIdValid("userId"),
+  commonMiddleware.isBodyValid(userValidator.update),
+  userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.update
 );
 
 userRouter.delete(
   "/:userId",
-  paramsMiddleware.isIdValid,
-  userMiddleware.isValidDelete,
+  authMiddleware.checkAccessToken,
+  commonMiddleware.isIdValid("userId"),
+  userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.delete
 );
