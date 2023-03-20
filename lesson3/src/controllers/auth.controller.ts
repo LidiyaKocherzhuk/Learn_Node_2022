@@ -1,29 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
-import { EEmailActions } from "../enums";
-import {
-  authService,
-  emailService,
-  passwordService,
-  userService,
-} from "../services";
+import { authService } from "../services";
 
 class AuthController {
   public async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const clientData = req.body;
-
-      const email = await emailService.sendMail(
-        "lidiyakocherzchuk@gmail.com",
-        EEmailActions.WELCOME
-      );
-      console.log(email, "controller");
-
-      const hashedPassword = await passwordService.hash(clientData.password);
-      await userService.create({
-        ...clientData,
-        password: hashedPassword,
-      });
+      await authService.register(res);
 
       res.status(201);
     } catch (error) {

@@ -1,12 +1,41 @@
 import { Response } from "express";
 
+import { EEmailActions, ESmsActions } from "../enums";
 import { ApiError } from "../errors";
 import { TokenModel } from "../models";
 import { ILocals, ILogin, ITokenPair, IUser } from "../types";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
+import { smsService } from "./sms.service";
 import { tokenService } from "./token.service";
+import { userService } from "./user.service";
 
 class AuthService {
+  public async register(res: Response): Promise<void> {
+    try {
+      const { clientData } = res.locals;
+
+      const email = await emailService.sendMail(
+        "lidiyakocherzchuk@gmail.com",
+        EEmailActions.WELCOME
+      );
+
+      if (email.rejected.length) {
+        throw new ApiError("Email rejected", 550);
+      }
+
+      await smsService.sendSms("+380683823743", ESmsActions.WELCOME);
+      const hashedPassword = await passwordService.hash(clientData.password);
+
+      await userService.create({
+        ...clientData,
+        password: hashedPassword,
+      });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
   public async login(res: Response): Promise<ITokenPair> {
     try {
       const { userFromDB, clientData } = res.locals as ILocals<ILogin>;

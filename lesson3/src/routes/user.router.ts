@@ -14,7 +14,7 @@ userRouter.get("/", userController.getAll);
 
 userRouter.get(
   "/:userId",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkToken(),
   commonMiddleware.isIdValid("userId"),
   userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.getById
@@ -22,7 +22,7 @@ userRouter.get(
 
 userRouter.patch(
   "/:userId",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkToken(),
   commonMiddleware.isIdValid("userId"),
   commonMiddleware.isBodyValid(userValidator.update),
   userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
@@ -31,7 +31,7 @@ userRouter.patch(
 
 userRouter.delete(
   "/:userId",
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkToken(),
   commonMiddleware.isIdValid("userId"),
   userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.delete

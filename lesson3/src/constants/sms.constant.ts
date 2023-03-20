@@ -1,6 +1,6 @@
 import { ESmsActions } from "../enums";
 
-export const smsConstant: { [key: string]: string } = {
+export const smsTemplates: { [key: string]: string } = {
   [ESmsActions.WELCOME]: "Great to see you in our app!",
 
   [ESmsActions.FORGOT_PASSWORD]:

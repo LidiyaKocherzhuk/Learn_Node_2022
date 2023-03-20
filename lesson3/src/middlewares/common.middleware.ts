@@ -28,7 +28,7 @@ class CommonMiddleware {
           next(new ApiError(error.message, 400));
         }
 
-        req.res.locals = value;
+        req.res.locals = { clientData: value };
         next();
       } catch (error) {
         next(error);

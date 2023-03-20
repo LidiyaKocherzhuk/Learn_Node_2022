@@ -3,7 +3,8 @@ import * as path from "node:path";
 import EmailTemplates from "email-templates";
 import nodemailer, { Transporter } from "nodemailer";
 
-import { allTemplates } from "../constants/email.constant";
+import { configs } from "../config";
+import { allTemplates } from "../constants";
 import { EEmailActions } from "../enums";
 
 class EmailService {
@@ -13,11 +14,10 @@ class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
       service: "gmail",
-      from: "lidiyakocherzchuk@gmail.com",
-      // auth: {
-      //   user: "",
-      //   pass: "",
-      // },
+      auth: {
+        user: configs.NO_REPLY_EMAIL,
+        pass: configs.NO_REPLY_PASSWORD,
+      },
     });
 
     this.templateParser = new EmailTemplates({
