@@ -18,7 +18,7 @@ class TokenService {
     return { accessToken, refreshToken };
   }
 
-  public checkToken(token: string, tokenType = ETokenTypes.access) {
+  public checkToken(token: string, tokenType: ETokenTypes) {
     try {
       let secret = "";
 
