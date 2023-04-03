@@ -1,8 +1,9 @@
 import { Response } from "express";
 
-import { EEmailActions, ESmsActions } from "../enums";
+import { EEmailActions, ESmsActions, ETokenTypes, EUserStatus } from "../enums";
 import { ApiError } from "../errors";
-import { TokenModel } from "../models";
+import { Token, User } from "../models";
+import { Action } from "../models/ActionTokens.model";
 import { ILocals, ILogin, ITokenPair, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -15,8 +16,15 @@ class AuthService {
     try {
       const { clientData } = res.locals;
 
+      const hashedPassword = await passwordService.hash(clientData.password);
+
+      const createdUser = await userService.create({
+        ...clientData,
+        password: hashedPassword,
+      });
+
       const email = await emailService.sendMail(
-        "lidiyakocherzchuk@gmail.com",
+        clientData.email,
         EEmailActions.WELCOME
       );
 
@@ -25,12 +33,7 @@ class AuthService {
       }
 
       await smsService.sendSms("+380683823743", ESmsActions.WELCOME);
-      const hashedPassword = await passwordService.hash(clientData.password);
-
-      await userService.create({
-        ...clientData,
-        password: hashedPassword,
-      });
+      await this.activate(createdUser);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -55,9 +58,94 @@ class AuthService {
         userName: name,
       });
 
-      await TokenModel.create({ ...tokenPair, _user_id: _id });
+      await Token.create({ ...tokenPair, _user_id: _id });
 
       return tokenPair;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async forgotPassword(res: Response): Promise<void> {
+    try {
+      const { userFromDB } = res.locals as ILocals<IUser>;
+      const actionToken = tokenService.generateActionToken(
+        {
+          userName: userFromDB.name,
+          _user_id: userFromDB._id,
+        },
+        ETokenTypes.forgot
+      );
+
+      await Action.create({
+        actionToken,
+        _user_id: userFromDB._id,
+        tokenType: ETokenTypes.forgot,
+      });
+
+      await emailService.sendMail(
+        userFromDB.email,
+        EEmailActions.FORGOT_PASSWORD,
+        { token: actionToken }
+      );
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async setForgotPassword(res: Response): Promise<void> {
+    try {
+      const { tokenInfo, clientData } = res.locals as ILocals<IUser>;
+
+      const hashedPassword = await passwordService.hash(clientData.password);
+
+      await Promise.all([
+        User.updateOne(
+          { _id: tokenInfo._user_id },
+          { password: hashedPassword }
+        ),
+        Action.deleteOne({ _id: tokenInfo._id }),
+      ]);
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async activate(user: IUser): Promise<void> {
+    try {
+      const actionToken = tokenService.generateActionToken(
+        {
+          userName: user.name,
+          _user_id: user._id,
+        },
+        ETokenTypes.activate
+      );
+
+      await Action.create({
+        actionToken,
+        _user_id: user._id,
+        tokenType: ETokenTypes.activate,
+      });
+
+      await emailService.sendMail(user.email, EEmailActions.ACTIVATE, {
+        token: actionToken,
+      });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async setActionToken(res: Response): Promise<void> {
+    try {
+      const { tokenInfo } = res.locals as ILocals<IUser>;
+
+      await Promise.all([
+        User.updateOne(
+          { _id: tokenInfo._user_id },
+          { isActivated: EUserStatus.active }
+        ),
+        Action.deleteOne({ _id: tokenInfo._id }),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -74,8 +162,8 @@ class AuthService {
       });
 
       await Promise.all([
-        TokenModel.create({ ...tokenPair, _user_id }),
-        TokenModel.deleteOne({ _id: tokenInfo._id }),
+        Token.create({ ...tokenPair, _user_id }),
+        Token.deleteOne({ _id: tokenInfo._id }),
       ]);
 
       return tokenPair;

@@ -18,6 +18,28 @@ class TokenService {
     return { accessToken, refreshToken };
   }
 
+  public generateActionToken(
+    payload: ITokenPayload,
+    tokenType: ETokenTypes
+  ): string {
+    let actionToken = "";
+
+    switch (tokenType) {
+      case "activate":
+        actionToken = jwt.sign(payload, configs.SECRET_ACTIVATE_KEY, {
+          expiresIn: configs.ACTION_LIFE_TIME,
+        });
+        break;
+      case "forgot":
+        actionToken = jwt.sign(payload, configs.SECRET_FORGOT_KEY, {
+          expiresIn: configs.ACTION_LIFE_TIME,
+        });
+        break;
+    }
+
+    return actionToken;
+  }
+
   public checkToken(token: string, tokenType: ETokenTypes) {
     try {
       let secret = "";
@@ -28,6 +50,12 @@ class TokenService {
           break;
         case "refresh":
           secret = configs.SECRET_REFRESH_KEY;
+          break;
+        case "activate":
+          secret = configs.SECRET_ACTIVATE_KEY;
+          break;
+        case "forgot":
+          secret = configs.SECRET_FORGOT_KEY;
           break;
       }
 

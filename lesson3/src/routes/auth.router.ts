@@ -1,9 +1,13 @@
-import {Router} from "express";
+import { Router } from "express";
 
-import {authController} from "../controllers";
-import {authMiddleware, commonMiddleware, userMiddleware,} from "../middlewares";
-import {authValidator, userValidator} from "../validators";
-import {ETokenTypes} from "../enums";
+import { authController } from "../controllers";
+import { ETokenTypes } from "../enums";
+import {
+  authMiddleware,
+  commonMiddleware,
+  userMiddleware,
+} from "../middlewares";
+import { authValidator, userValidator } from "../validators";
 
 export const authRouter = Router();
 
@@ -19,6 +23,33 @@ authRouter.post(
   commonMiddleware.isBodyValid(authValidator.login),
   userMiddleware.checkExistUser("exist", "email"),
   authController.login
+);
+
+authRouter.post(
+  "/password/change",
+  commonMiddleware.isBodyValid(authValidator.login),
+  userMiddleware.checkExistUser("exist", "email"),
+  authController.forgotPassword
+);
+
+authRouter.post(
+  "/password/forgot",
+  commonMiddleware.isBodyValid(authValidator.forgot),
+  userMiddleware.checkExistUser("exist", "email"),
+  authController.forgotPassword
+);
+
+authRouter.patch(
+  "/password/forgot/:token",
+  commonMiddleware.isBodyValid(authValidator.forgotPassword),
+  authMiddleware.checkActionToken(ETokenTypes.forgot),
+  authController.setForgotPassword
+);
+
+authRouter.patch(
+  "/activate/:token",
+  authMiddleware.checkActionToken(ETokenTypes.activate),
+  authController.setActionToken
 );
 
 authRouter.post(

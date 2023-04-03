@@ -30,12 +30,12 @@ class EmailService {
       juice: true,
       juiceResources: {
         webResources: {
-          rebaseRelativeTo: path.join(
+          relativeTo: path.join(
             process.cwd(),
             "lesson3",
             "src",
             "statics",
-            "style.css"
+            "css"
           ),
         },
       },
@@ -49,6 +49,7 @@ class EmailService {
   ) {
     console.log(path.join(process.cwd()));
     const templateInfo = allTemplates[emailAction];
+    locals.frontUrl = configs.FRONT_URL;
 
     const html = await this.templateParser.render(
       templateInfo.templateName,

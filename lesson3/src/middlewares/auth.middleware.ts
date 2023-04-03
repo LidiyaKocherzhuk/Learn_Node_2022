@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 
 import { ETokenTypes } from "../enums";
 import { ApiError } from "../errors";
-import { TokenModel } from "../models";
+import { Token } from "../models";
+import { Action } from "../models/ActionTokens.model";
 import { tokenService } from "../services";
 
 class AuthMiddleware {
@@ -18,12 +19,9 @@ class AuthMiddleware {
           next(new ApiError("Token not found", 401));
         }
 
-        const jwtPayload = await tokenService.checkToken(
-          token,
-          action
-        );
+        const jwtPayload = await tokenService.checkToken(token, action);
 
-        const tokenInfo = await TokenModel.findOne({ [tokenName]: token });
+        const tokenInfo = await Token.findOne({ [tokenName]: token });
 
         if (!tokenInfo) {
           next(new ApiError("Token not valid", 401));
@@ -36,36 +34,31 @@ class AuthMiddleware {
       }
     };
   }
-  //
-  // public async checkRefreshToken(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ) {
-  //   try {
-  //     const refreshToken = req.header("Authorization");
-  //
-  //     if (!refreshToken) {
-  //       next(new ApiError("Token not found", 401));
-  //     }
-  //
-  //     const jwtPayload = await tokenService.checkToken(
-  //       refreshToken,
-  //       ETokenTypes.refresh
-  //     );
-  //     const tokenInfo = await TokenModel.findOne({ refreshToken });
-  //
-  //     if (!tokenInfo) {
-  //       next(new ApiError("Token not valid", 401));
-  //     }
-  //
-  //     console.log(jwtPayload);
-  //     res.locals = { tokenInfo, jwtPayload };
-  //     next();
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+
+  public checkActionToken(action: ETokenTypes) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { token } = req.params;
+
+        if (!token) {
+          next(new ApiError("Token not found", 401));
+        }
+
+        await tokenService.checkToken(token, action);
+
+        const tokenInfo = await Action.findOne({ actionToken: token });
+
+        if (!tokenInfo) {
+          next(new ApiError("Token not valid", 401));
+        }
+
+        res.locals = { ...res.locals, tokenInfo };
+        next();
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
 }
 
 export const authMiddleware = new AuthMiddleware();
