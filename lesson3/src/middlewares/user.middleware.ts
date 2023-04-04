@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../errors";
-import { userService } from "../services";
-import { IUser } from "../types";
+import { OldPassword } from "../models";
+import { passwordService, userService } from "../services";
+import { ILocals, IUser } from "../types";
 
 class UserMiddleware {
   public checkExistUser(
@@ -44,6 +45,40 @@ class UserMiddleware {
         res.locals = { ...res.locals, userFromDB: user };
 
         next();
+      } catch (e) {
+        next(e);
+      }
+    };
+  }
+
+  public checkOldPassword(
+    action: "userFromDB" | "tokenInfo" = "userFromDB",
+    id: "_id" | "_user_id" = "_id"
+  ) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { clientData } = req.res.locals as ILocals<IUser>;
+        const userId = req.res.locals[action][id];
+
+        const oldPasswords = await OldPassword.find({ _user_id: userId });
+
+        oldPasswords.map(async (item) => {
+          const comparedPassword = await passwordService.compare(
+            clientData.password,
+            item.oldPassword
+          );
+
+          if (comparedPassword) {
+            next(
+              new ApiError(
+                "Give me new password! This password you already used!",
+                400
+              )
+            );
+          }
+
+          next();
+        });
       } catch (e) {
         next(e);
       }

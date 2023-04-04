@@ -2,8 +2,7 @@ import { Response } from "express";
 
 import { EEmailActions, ESmsActions, ETokenTypes, EUserStatus } from "../enums";
 import { ApiError } from "../errors";
-import { Token, User } from "../models";
-import { Action } from "../models/ActionTokens.model";
+import { Action, OldPassword, Token, User } from "../models";
 import { ILocals, ILogin, ITokenPair, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -17,10 +16,13 @@ class AuthService {
       const { clientData } = res.locals;
 
       const hashedPassword = await passwordService.hash(clientData.password);
-
       const createdUser = await userService.create({
         ...clientData,
         password: hashedPassword,
+      });
+      await OldPassword.create({
+        _user_id: createdUser._id,
+        oldPassword: hashedPassword,
       });
 
       const email = await emailService.sendMail(
@@ -61,6 +63,23 @@ class AuthService {
       await Token.create({ ...tokenPair, _user_id: _id });
 
       return tokenPair;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async changePassword(res: Response): Promise<void> {
+    try {
+      const { clientData, userFromDB } = res as ILocals<IUser>;
+      const hashedPassword = passwordService.hash(clientData.password);
+
+      await Promise.all([
+        User.updateOne({ _id: userFromDB._id }, { password: hashedPassword }),
+        OldPassword.create({
+          _user_id: userFromDB._id,
+          oldPassword: hashedPassword,
+        }),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -151,7 +170,7 @@ class AuthService {
     }
   }
 
-  public async refresh(res: Response) {
+  public async refresh(res: Response): Promise<ITokenPair> {
     try {
       const { jwtPayload, tokenInfo } = res.locals as ILocals<IUser>;
       const { _user_id, userName } = jwtPayload;

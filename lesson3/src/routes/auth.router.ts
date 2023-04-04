@@ -29,7 +29,8 @@ authRouter.post(
   "/password/change",
   commonMiddleware.isBodyValid(authValidator.login),
   userMiddleware.checkExistUser("exist", "email"),
-  authController.forgotPassword
+  userMiddleware.checkOldPassword(),
+  authController.changePassword
 );
 
 authRouter.post(
@@ -43,6 +44,7 @@ authRouter.patch(
   "/password/forgot/:token",
   commonMiddleware.isBodyValid(authValidator.forgotPassword),
   authMiddleware.checkActionToken(ETokenTypes.forgot),
+  userMiddleware.checkOldPassword("tokenInfo", "_user_id"),
   authController.setForgotPassword
 );
 

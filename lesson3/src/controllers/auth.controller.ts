@@ -23,6 +23,16 @@ class AuthController {
     }
   }
 
+  public async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      await authService.changePassword(req.res);
+
+      res.status(200).json("ok");
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public async forgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.forgotPassword(req.res);
