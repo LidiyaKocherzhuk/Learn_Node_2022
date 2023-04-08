@@ -1,11 +1,42 @@
 import { UpdateWriteOpResult } from "mongoose";
 
+import { ApiError } from "../errors";
 import { User } from "../models";
-import { IUser } from "../types";
+import { IPaginationResponse, IQuery, IUser } from "../types";
 
 class UserService {
-  public async getAll(): Promise<IUser[]> {
-    return User.find();
+  public async getWithPagination(
+    query: IQuery
+  ): Promise<IPaginationResponse<IUser>> {
+    try {
+      const {
+        page = 1,
+        limit = 5,
+        sortedBy = "createdAt",
+        ...searchParams
+      } = query;
+
+      const skip = +limit * (+page - 1);
+
+      const users = await User.find(searchParams)
+        .limit(+limit)
+        .skip(skip)
+        .sort(sortedBy)
+        .lean();
+
+      const usersTotalCount = await User.count();
+      const perPage = page > 1 ? +page - 1 : 0;
+
+      return {
+        page: +page,
+        perPage,
+        itemsCount: usersTotalCount,
+        itemsFound: users.length,
+        data: users,
+      };
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
   }
 
   public getById(_id: string): Promise<IUser> {
