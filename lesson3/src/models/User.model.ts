@@ -28,6 +28,12 @@ const userSchema = new Schema(
     gender: {
       type: String,
       enum: EGenders,
+      required: false,
+      trim: true,
+    },
+    avatar: {
+      type: String,
+      required: false,
       trim: true,
     },
     isActivated: {

@@ -1,8 +1,10 @@
+import { UploadedFile } from "express-fileupload";
 import { UpdateWriteOpResult } from "mongoose";
 
 import { ApiError } from "../errors";
 import { User } from "../models";
 import { IPaginationResponse, IQuery, IUser } from "../types";
+import { s3Service } from "./s3.service";
 
 class UserService {
   public async getWithPagination(
@@ -25,11 +27,11 @@ class UserService {
         .lean();
 
       const usersTotalCount = await User.count();
-      const perPage = page > 1 ? +page - 1 : 0;
+      const perPage = +page > 1 ? +page - 1 : 0;
 
       return {
         page: +page,
-        perPage,
+        perPage: +perPage,
         itemsCount: usersTotalCount,
         itemsFound: users.length,
         data: users,
@@ -56,6 +58,14 @@ class UserService {
     updateUser: Partial<IUser>
   ): Promise<UpdateWriteOpResult> {
     return User.updateOne({ _id }, updateUser);
+  }
+
+  public async uploadAvatar(
+    file: UploadedFile,
+    _id: string
+  ): Promise<UpdateWriteOpResult> {
+    const filePath = await s3Service.uploadPhoto(file, "user", _id);
+    return this.update(_id, { avatar: filePath });
   }
 
   public async delete(_id: string): Promise<void> {

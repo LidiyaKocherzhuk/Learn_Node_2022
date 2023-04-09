@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors";
 import { userService } from "../services";
 import { ICommonResponse, IMessage, IQuery, IUser } from "../types";
+import {UploadedFile} from "express-fileupload";
 
 class UserController {
   public async getAll(
@@ -64,6 +65,23 @@ class UserController {
       }
 
       return res.json({ message: "User updated successfully." });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async uploadAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response<IMessage>> {
+    try {
+      const { userId } = req.params;
+      const avatar = req.files.avatar as UploadedFile;
+
+      const user = await userService.uploadAvatar(avatar, userId);
+
+      return res.status(201).json({ user });
     } catch (error) {
       next(error);
     }
