@@ -1,5 +1,4 @@
 import { UploadedFile } from "express-fileupload";
-import { UpdateWriteOpResult } from "mongoose";
 
 import { ApiError } from "../errors";
 import { User } from "../models";
@@ -53,19 +52,28 @@ class UserService {
     return User.create(createUser);
   }
 
-  public update(
-    _id: string,
-    updateUser: Partial<IUser>
-  ): Promise<UpdateWriteOpResult> {
-    return User.updateOne({ _id }, updateUser);
+  public update(_id: string, updateUser: Partial<IUser>): Promise<IUser> {
+    return User.findByIdAndUpdate(_id, updateUser, { new: true });
   }
 
-  public async uploadAvatar(
-    file: UploadedFile,
-    _id: string
-  ): Promise<UpdateWriteOpResult> {
-    const filePath = await s3Service.uploadPhoto(file, "user", _id);
-    return this.update(_id, { avatar: filePath });
+  public async uploadAvatar(file: UploadedFile, _id: string): Promise<IUser> {
+    try {
+      const filePath = await s3Service.uploadPhoto(file, "user", _id);
+      const updatedUser = await this.update(_id, { avatar: filePath });
+      await s3Service.deletePhoto(updatedUser.avatar);
+      return updatedUser;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async deleteAvatar(user: IUser): Promise<IUser> {
+    await s3Service.deletePhoto(user.avatar);
+    return User.findByIdAndUpdate(
+      user._id,
+      { $unset: { avatar: true } },
+      { new: true }
+    );
   }
 
   public async delete(_id: string): Promise<void> {

@@ -1,3 +1,5 @@
+import { UploadedFile } from "express-fileupload";
+
 import { IToken, ITokenPayload } from "./token.type";
 import { IUser } from "./user.type";
 
@@ -18,6 +20,7 @@ export interface ILocals<T> {
   clientData?: T;
   tokenInfo?: IToken;
   jwtPayload?: ITokenPayload;
+  avatar?: UploadedFile;
 }
 
 export interface IQuery {

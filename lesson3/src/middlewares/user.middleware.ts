@@ -15,6 +15,7 @@ class UserMiddleware {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const data = req[from][fieldName];
+        console.log(data);
 
         const user = await userService.getOne({ [dbField]: data });
 

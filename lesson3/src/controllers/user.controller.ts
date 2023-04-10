@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ApiError } from "../errors";
 import { userService } from "../services";
-import { ICommonResponse, IMessage, IQuery, IUser } from "../types";
-import {UploadedFile} from "express-fileupload";
+import { ICommonResponse, ILocals, IMessage, IQuery, IUser } from "../types";
 
 class UserController {
   public async getAll(
@@ -54,17 +52,13 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<IMessage>> {
+  ): Promise<Response<IUser>> {
     try {
       const { userId } = req.params;
 
-      const result = await userService.update(userId, req.body);
+      const user = await userService.update(userId, req.body);
 
-      if (!result.acknowledged) {
-        next(new ApiError("Error...", 400));
-      }
-
-      return res.json({ message: "User updated successfully." });
+      return res.json(user);
     } catch (error) {
       next(error);
     }
@@ -74,14 +68,29 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<IMessage>> {
+  ): Promise<Response<IUser>> {
     try {
       const { userId } = req.params;
-      const avatar = req.files.avatar as UploadedFile;
+      const { avatar } = req.res.locals as ILocals<IUser>;
 
       const user = await userService.uploadAvatar(avatar, userId);
+      return res.status(201).json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-      return res.status(201).json({ user });
+  public async deleteAvatar(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response<IUser>> {
+    try {
+      const { userFromDB } = req.res.locals as ILocals<IUser>;
+
+      const user = await userService.deleteAvatar(userFromDB);
+
+      return res.status(201).json(user);
     } catch (error) {
       next(error);
     }

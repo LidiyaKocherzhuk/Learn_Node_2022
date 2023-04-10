@@ -1,10 +1,15 @@
 import { extname } from "node:path";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { UploadedFile } from "express-fileupload";
 import { v4 } from "uuid";
 
 import { configs } from "../config";
+import { ApiError } from "../errors";
 
 class S3Service {
   private client: S3Client;
@@ -24,19 +29,36 @@ class S3Service {
     itemType: string,
     itemId: string
   ): Promise<string> {
-    const filePath = this.buildPath(file.name, itemType, itemId);
+    try {
+      const filePath = this.buildPath(file.name, itemType, itemId);
 
-    await this.client.send(
-      new PutObjectCommand({
-        Bucket: configs.S3_NAME,
-        ACL: configs.S3_ACL,
-        Key: file.mimetype,
-        ContentType: itemType,
-        Body: file.data,
-      })
-    );
+      await this.client.send(
+        new PutObjectCommand({
+          Bucket: configs.S3_NAME,
+          ACL: configs.S3_ACL,
+          Key: file.mimetype,
+          ContentType: itemType,
+          Body: file.data,
+        })
+      );
 
-    return `${configs.S3_URL}/${filePath}`;
+      return filePath;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async deletePhoto(filePath: string): Promise<void> {
+    try {
+      await this.client.send(
+        new DeleteObjectCommand({
+          Bucket: configs.S3_NAME,
+          Key: filePath,
+        })
+      );
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
   }
 
   private buildPath(

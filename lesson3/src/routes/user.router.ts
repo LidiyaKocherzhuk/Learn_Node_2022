@@ -7,6 +7,7 @@ import {
   userMiddleware,
 } from "../middlewares";
 import { userValidator } from "../validators";
+import {fileMiddleware} from "../middlewares/file.middleware";
 
 export const userRouter = Router();
 
@@ -30,10 +31,18 @@ userRouter.put(
 );
 
 userRouter.put(
-  "/upload-file/:userId",
+  "/:userId/avatar",
   authMiddleware.checkToken(),
   commonMiddleware.isIdValid("userId"),
-  // commonMiddleware.isBodyValid(userValidator.update),
+  userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
+  fileMiddleware.checkFile("avatar"),
+  userController.uploadAvatar
+);
+
+userRouter.delete(
+  "/:userId/avatar",
+  authMiddleware.checkToken(),
+  commonMiddleware.isIdValid("userId"),
   userMiddleware.checkExistUser("exist", "userId", "params", "_id"),
   userController.uploadAvatar
 );
