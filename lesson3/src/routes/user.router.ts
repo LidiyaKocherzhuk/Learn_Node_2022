@@ -6,8 +6,8 @@ import {
   commonMiddleware,
   userMiddleware,
 } from "../middlewares";
+import { fileMiddleware } from "../middlewares/file.middleware";
 import { userValidator } from "../validators";
-import {fileMiddleware} from "../middlewares/file.middleware";
 
 export const userRouter = Router();
 

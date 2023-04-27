@@ -12,7 +12,7 @@ class UserController {
     try {
       const users = await userService.getWithPagination(req.query as IQuery);
 
-      return res.json(users);
+      return res.status(200).json(users);
     } catch (error) {
       next(error);
     }
@@ -28,7 +28,7 @@ class UserController {
 
       const user = await userService.getById(userId);
 
-      return res.json(user);
+      return res.status(200).json(user);
     } catch (error) {
       next(error);
     }
@@ -42,7 +42,7 @@ class UserController {
     try {
       const user = await userService.create(res.locals as IUser);
 
-      return res.json({ message: "User created successfully.", data: user });
+      return res.status(201).json(user);
     } catch (error) {
       next(error);
     }
@@ -58,7 +58,7 @@ class UserController {
 
       const user = await userService.update(userId, req.body);
 
-      return res.json(user);
+      return res.status(200).json(user);
     } catch (error) {
       next(error);
     }
@@ -106,7 +106,7 @@ class UserController {
 
       await userService.delete(userId);
 
-      return res.json({ message: "User deleted successfully." });
+      return res.status(200);
     } catch (error) {
       next(error);
     }

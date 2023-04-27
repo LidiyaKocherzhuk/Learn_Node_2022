@@ -1,0 +1,580 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "SEPT-2022",
+    "description": "NODEJS MODULE FOR SEPT-2022",
+    "contact": {
+      "email": "lidiyakocherzchuk@gmail.com"
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "operationId": "getAllUsers",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by id",
+        "operationId": "getUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "642c1ddc88e7865070e6d163"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user by id",
+        "operationId": "updateUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "642c1ddc88e7865070e6d163"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Updated successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete User by id",
+        "operationId": "deleteUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "642c1ddc88e7865070e6d163"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/users/{userId}/avatar": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add avatar by user id",
+        "operationId": "addAvatarByUserId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "642c1ddc88e7865070e6d163"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Operation was successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete avatar by user id",
+        "operationId": "deleteAvatarByUserId",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "642c1ddc88e7865070e6d163"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Deleted avatar successfully"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register User",
+        "operationId": "registerUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "default": {
+                "name": "Lida",
+                "email": "lida@gmail.com",
+                "password": "1235LoVe*",
+                "phone": "+380686523569",
+                "gender": "female"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login User",
+        "operationId": "loginUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "default": {
+                "email": "lida@gmail.com",
+                "password": "1235LoVe*"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/password/change": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Change password",
+        "operationId": "changePassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "default": {
+                "email": "lida@gmail.com",
+                "password": "1235LoVe*"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Changed password successfully"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/password/forgot": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Forgot password",
+        "operationId": "forgotPassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "default": {
+                "email": "lida@gmail.com"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password change request sent successfully"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/password/forgot/{token}": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Set forgot password",
+        "operationId": "setForgotPassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "boby",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "default": {
+                "password": "1235LoVe*"
+              }
+            }
+          },
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/activate/{token}": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Activate user",
+        "operationId": "activateUSer",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfdXNlcl9pZCI6IjY0NGFjZmFiMmE4NjlhOWNlNzMyYThkMiIsInVzZXJOYW1lIjoiTGlkYSIsImlhdCI6MTY4MjYyNDcyNiwiZXhwIjoxNjgyODgzOTI2fQ.NqFIBWjoQR91kinHa9tpmdjM3HHxFwj7AK0rSwMJRL4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Token"
+            }
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "400": {
+            "description": "Bed request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "642c1ddc88e7865070e6d163"
+        },
+        "name": {
+          "type": "string",
+          "example": "Lida"
+        },
+        "email": {
+          "type": "string",
+          "example": "lida@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "1235LoVe"
+        },
+        "phone": {
+          "type": "string",
+          "example": "+380686523569"
+        },
+        "gender": {
+          "type": "string",
+          "example": "female"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "user/642c1ddc88e7865070e6d163/831399f1-0ed7-4364-b386-653c485b061c.webp"
+        },
+        "isActivated": {
+          "type": "string",
+          "example": "active"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2023-04-04T12:53:48.189Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2023-04-10T12:36:23.344Z"
+        }
+      }
+    },
+    "Token": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "example": "sdglskrtg5f3srg4drgsr5gs"
+        },
+        "refreshToken": {
+          "type": "string",
+          "example": "sdglskrtg5f3srg4drgsr5gs"
+        }
+      }
+    }
+  }
+}

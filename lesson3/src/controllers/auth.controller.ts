@@ -27,7 +27,7 @@ class AuthController {
     try {
       await authService.changePassword(req.res);
 
-      res.status(200).json("ok");
+      res.status(201).json("ok");
     } catch (error) {
       next(error);
     }
@@ -51,7 +51,7 @@ class AuthController {
     try {
       await authService.setForgotPassword(req.res);
 
-      res.status(200).json("ok");
+      res.status(201).json("ok");
     } catch (error) {
       next(error);
     }

@@ -25,8 +25,9 @@ authRouter.post(
   authController.login
 );
 
-authRouter.post(
+authRouter.patch(
   "/password/change",
+  authMiddleware.checkToken(),
   commonMiddleware.isBodyValid(authValidator.login),
   userMiddleware.checkExistUser("exist", "email"),
   userMiddleware.checkOldPassword(),
