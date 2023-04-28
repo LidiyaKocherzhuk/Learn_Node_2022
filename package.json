@@ -46,7 +46,7 @@
     "tsc-watch": "^6.0.0"
   },
   "scripts": {
-    "start:prod": "rimraf ./lesson3/dist && tsc-watch \"node ./lesson3/dist/app.js\"",
+    "start:prod": "rimraf ./lesson3/dist && tsc-watch --onSuccess \"node ./lesson3/dist/app.js\"",
     "start:dev": "rimraf ./lesson3/dist && tsc-watch --onSuccess \"npm run watch\"",
     "watch": "nodemon \"./lesson3/src/app.ts\" --watch \"./lesson3/src\"",
     "lint": "eslint \"{lesson3/src,apps,libs,test}/**/*.ts\" --fix",
