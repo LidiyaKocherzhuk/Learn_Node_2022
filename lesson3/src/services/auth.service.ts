@@ -35,7 +35,7 @@ class AuthService {
       }
 
       await smsService.sendSms("+380683823743", ESmsActions.WELCOME);
-      // await this.activate(createdUser);
+      await this.activate(createdUser);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

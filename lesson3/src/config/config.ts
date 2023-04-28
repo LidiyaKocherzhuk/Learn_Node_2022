@@ -3,13 +3,13 @@ config();
 
 export const configs = {
   PORT: process.env.PORT || 5000,
-  DB_URL: process.env.BD_URL || "localhost:3000",
+  DB_URL: process.env.BD_URL || "//127.0.0.1:27017/september-2022",
   FRONT_URL: process.env.FRONT_URL,
 
   SECRET_ACCESS_KEY: process.env.JWT_SECRET_ACCESS_KEY,
   SECRET_REFRESH_KEY: process.env.JWT_SECRET_REFRESH_KEY,
-  SECRET_ACTIVATE_KEY: process.env.SECRET_ACCESS_KEY,
-  SECRET_FORGOT_KEY: process.env.SECRET_REFRESH_KEY,
+  SECRET_ACTIVATE_KEY: process.env.SECRET_ACTIVATE_KEY,
+  SECRET_FORGOT_KEY: process.env.SECRET_FORGOT_KEY,
 
   ACCESS_LIFE_TIME: "3d",
   REFRESH_LIFE_TIME: "30d",
@@ -25,7 +25,6 @@ export const configs = {
   S3_REGION: process.env.S3_REGION,
   S3_URL: process.env.S3_URL,
   S3_ACL: process.env.S3_ACL,
-
 
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
   AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
